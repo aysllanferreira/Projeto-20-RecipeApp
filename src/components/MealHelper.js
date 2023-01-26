@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getCategoryMeals, getMeals } from '../services/api';
+import { getCategoryMeals, getMeals, getMealsByCategoryClicked } from '../services/api';
 
 class MealHelper extends Component {
   state = {
@@ -27,21 +27,54 @@ class MealHelper extends Component {
     this.setState({ categories: limitedTo5 });
   };
 
+  handleClick = async (e) => {
+    const size = 12;
+    const response = await getMealsByCategoryClicked(e.target.innerHTML);
+    const limitedTo12 = response.meals.slice(0, size);
+    this.setState({
+      arrayOfMeals: limitedTo12,
+    });
+  };
+
   render() {
     const { arrayOfMeals, categories } = this.state;
+    const { recipes } = this.props;
     return (
       <div>
         { categories.map((e) => (
           <button
             key={ e.strCategory }
             data-testid={ `${e.strCategory}-category-filter` }
+            onClick={ this.handleClick }
           >
             { e.strCategory }
           </button>
         )) }
-
-        { arrayOfMeals.map((e, index) => (
-
+        <button
+          data-testid="All-category-filter"
+          onClick={ this.getarrayOfMeals }
+        >
+          All
+        </button>
+        { recipes.length > 0 ? (
+          recipes.map((e, index) => (
+            <div
+              data-testid={ `${index}-recipe-card` }
+              key={ index }
+              className="cardContainer"
+            >
+              <p data-testid={ `${index}-card-name` }>
+                { e.strMeal }
+              </p>
+              <img
+                alt={ e.strMeal }
+                src={ e.strMealThumb }
+                data-testid={ `${index}-card-img` }
+                className="cardImage"
+              />
+            </div>
+          ))
+        ) : arrayOfMeals.map((e, index) => (
           <div
             data-testid={ `${index}-recipe-card` }
             key={ index }
@@ -58,10 +91,16 @@ class MealHelper extends Component {
               className="cardImage"
             />
           </div>
-        )) }
+        ))}
       </div>
     );
   }
 }
 
-export default connect()(MealHelper);
+const mapStateToProps = (state) => ({
+  recipes: state.headerSearch.recipes,
+});
+
+MealHelper.propTypes = {}.isRequired;
+
+export default connect(mapStateToProps)(MealHelper);
