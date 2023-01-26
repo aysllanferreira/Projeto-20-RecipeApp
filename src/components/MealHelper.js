@@ -39,6 +39,8 @@ class MealHelper extends Component {
   render() {
     const { arrayOfMeals, categories } = this.state;
     const { recipes } = this.props;
+    const size = 12;
+    const maxLength = recipes.slice(0, size);
     return (
       <div>
         { categories.map((e) => (
@@ -56,8 +58,8 @@ class MealHelper extends Component {
         >
           All
         </button>
-        { recipes.length > 0 ? (
-          recipes.map((e, index) => (
+        { maxLength.length > 0 ? (
+          maxLength.map((e, index) => (
             <div
               data-testid={ `${index}-recipe-card` }
               key={ index }
