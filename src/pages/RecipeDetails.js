@@ -48,6 +48,18 @@ function RecipeDetails() {
 
   return (
     <div className="recipe-details">
+      <button
+        type="button"
+        data-testid="share-btn"
+      >
+        Compartilhar
+      </button>
+      <button
+        type="button"
+        data-testid="favorite-btn"
+      >
+        Favoritar
+      </button>
       <h1>Recipe Details</h1>
       {recipe.map((item, index) => (
         <div key={ index } className="recipe-details__container">
