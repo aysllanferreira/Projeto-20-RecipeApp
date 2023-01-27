@@ -105,6 +105,15 @@ function RecipeDetails() {
           </Link>
         ))}
       </div>
+
+      <div className="recipe-details__buttons">
+        <button
+          type="button"
+          data-testid="start-recipe-btn"
+        >
+          Start Recipe
+        </button>
+      </div>
     </div>
   );
 }
