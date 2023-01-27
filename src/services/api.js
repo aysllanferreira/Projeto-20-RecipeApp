@@ -88,20 +88,6 @@ const getDrinksByID = async (id) => {
   return data;
 };
 
-// Recommendations
-
-const recommendMeals = async () => {
-  const response = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
-  const data = await response.json();
-  return data;
-};
-
-const recommendDrinks = async () => {
-  const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=');
-  const data = await response.json();
-  return data;
-};
-
 export {
   findByIngredient,
   findByName,
@@ -117,6 +103,4 @@ export {
   getMealsByCategoryClicked,
   getMealsByID,
   getDrinksByID,
-  recommendMeals,
-  recommendDrinks,
 };

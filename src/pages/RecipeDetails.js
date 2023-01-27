@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { getMealsByID, getDrinksByID,
-  recommendMeals, recommendDrinks } from '../services/api';
+  getMeals, getDrinks } from '../services/api';
+import './RecipeDetails.scss';
 
 function RecipeDetails() {
   const location = useLocation();
   const [recipe, setRecipe] = useState([]);
   const [recommendation, setRecommendation] = useState([]);
+  const type = location.pathname.split('/')[1];
 
   useEffect(() => {
-    const type = location.pathname.split('/')[1];
+    const types = location.pathname.split('/')[1];
     const id = location.pathname.split('/')[2];
-    if (type === 'meals') {
+    if (types === 'meals') {
       getMealsByID(id).then((data) => setRecipe(data.meals));
-      recommendDrinks().then((data) => setRecommendation(data.drinks));
+      getDrinks().then((data) => setRecommendation(data.drinks));
     } else {
       getDrinksByID(id).then((data) => setRecipe(data.drinks));
-      recommendMeals().then((data) => setRecommendation(data.meals));
+      getMeals().then((data) => setRecommendation(data.meals));
     }
   }, [location.pathname]);
 
@@ -24,18 +26,20 @@ function RecipeDetails() {
   // So estou descontando minha frustracao com o linter, equipe! kkk
 
   const souInimigodoLinter = -11;
+  const seguraAMagia = 6;
 
-  console.log(recommendation);
+  console.log(recommendation.length);
 
   return (
-    <div>
+    <div className="recipe-details">
       <h1>Recipe Details</h1>
       {recipe.map((item, index) => (
-        <div key={ index }>
+        <div key={ index } className="recipe-details__container">
           <img
             src={ item.strMealThumb || item.strDrinkThumb }
             alt="recipe"
             data-testid="recipe-photo"
+            className="recipe-details__container__img"
           />
           <h2 data-testid="recipe-title">{item.strMeal || item.strDrink}</h2>
           <h3 data-testid="recipe-category">{item.strCategory}</h3>
@@ -64,13 +68,43 @@ function RecipeDetails() {
             <iframe
               data-testid="video"
               title="recipe"
-              width="420"
+              width="360"
               height="315"
               src={ `https://www.youtube.com/embed/${item.strYoutube.slice(souInimigodoLinter)}` }
             />
           )}
         </div>
       ))}
+      <h3>Recommendations</h3>
+      <div className="recipe-details__recommendations">
+        { recommendation.length > 0
+        && recommendation.slice(0, seguraAMagia).map((item, index) => (
+
+          <Link
+            key={ index }
+            to={
+              `/${type === 'meals' ? 'drinks' : 'meals'}/${item.idMeal || item.idDrink}`
+            }
+          >
+            <div
+              key={ index }
+              data-testid={ `${index}-recommendation-card` }
+              className="recipe-details__recommendations__card"
+            >
+              <img
+                src={ item.strMealThumb || item.strDrinkThumb }
+                alt="recipe"
+                data-testid={ `${index}-card-img` }
+              />
+              <p
+                data-testid={ `${index}-recommendation-title` }
+              >
+                {item.strMeal || item.strDrink}
+              </p>
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
