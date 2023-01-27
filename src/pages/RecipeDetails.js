@@ -44,6 +44,7 @@ function RecipeDetails() {
 
   const souInimigodoLinter = -11;
   const seguraAMagia = 6;
+  const id = location.pathname.split('/')[2];
 
   return (
     <div className="recipe-details">
@@ -122,12 +123,18 @@ function RecipeDetails() {
       </div>
 
       <div className="recipe-details__buttons">
-        <button
-          type="button"
-          data-testid="start-recipe-btn"
+        <Link
+          to={
+            `/${type === 'drinks' ? 'drinks' : 'meals'}/${id}/in-progress`
+          }
         >
-          { recipeContinue ? 'Start Recipe' : 'Continue Recipe'}
-        </button>
+          <button
+            type="button"
+            data-testid="start-recipe-btn"
+          >
+            { recipeContinue ? 'Start Recipe' : 'Continue Recipe'}
+          </button>
+        </Link>
       </div>
     </div>
   );
