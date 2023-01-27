@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { getCategoryDrinks, getDrinks,
   getDrinksByCategoryClicked } from '../services/api';
 
@@ -68,39 +69,47 @@ class DrinkHelper extends Component {
         </button>
         { recipes.length > 0 ? (
           maxLength.map((e, index) => (
-            <div
-              data-testid={ `${index}-recipe-card` }
+            <Link
+              to={ `/drinks/${e.idDrink}` }
               key={ index }
-              className="cardContainer"
             >
-              <p data-testid={ `${index}-card-name` }>
-                { e.strDrink }
-              </p>
-              <img
-                alt={ e.strDrink }
-                src={ e.strDrinkThumb }
-                data-testid={ `${index}-card-img` }
-                className="cardImage"
-              />
-            </div>
+              <div
+                data-testid={ `${index}-recipe-card` }
+                className="cardContainer"
+              >
+                <p data-testid={ `${index}-card-name` }>
+                  { e.strDrink }
+                </p>
+                <img
+                  alt={ e.strDrink }
+                  src={ e.strDrinkThumb }
+                  data-testid={ `${index}-card-img` }
+                  className="cardImage"
+                />
+              </div>
+            </Link>
           ))
         ) : (
           arrayOfDrinks.map((e, index) => (
-            <div
-              data-testid={ `${index}-recipe-card` }
+            <Link
+              to={ `/drinks/${e.idDrink}` }
               key={ index }
-              className="cardContainer"
             >
-              <p data-testid={ `${index}-card-name` }>
-                { e.strDrink }
-              </p>
-              <img
-                alt={ e.strDrink }
-                src={ e.strDrinkThumb }
-                data-testid={ `${index}-card-img` }
-                className="cardImage"
-              />
-            </div>
+              <div
+                data-testid={ `${index}-recipe-card` }
+                className="cardContainer"
+              >
+                <p data-testid={ `${index}-card-name` }>
+                  { e.strDrink }
+                </p>
+                <img
+                  alt={ e.strDrink }
+                  src={ e.strDrinkThumb }
+                  data-testid={ `${index}-card-img` }
+                  className="cardImage"
+                />
+              </div>
+            </Link>
           ))
         )}
       </div>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { getCategoryMeals, getMeals, getMealsByCategoryClicked } from '../services/api';
 
 class MealHelper extends Component {
@@ -70,14 +71,39 @@ class MealHelper extends Component {
         </button>
         { maxLength.length > 0 ? (
           maxLength.map((e, index) => (
+            <Link
+              to={ `/meals/${e.idMeal}` }
+              key={ index }
+            >
+              <div
+                data-testid={ `${index}-recipe-card` }
+                className="cardContainer"
+              >
+                <p data-testid={ `${index}-card-name` }>
+                  { e.strMeal }
+                </p>
+                <img
+                  alt={ e.strMeal }
+                  src={ e.strMealThumb }
+                  data-testid={ `${index}-card-img` }
+                  className="cardImage"
+                />
+              </div>
+            </Link>
+          ))
+        ) : arrayOfMeals.map((e, index) => (
+          <Link
+            to={ `/meals/${e.idMeal}` }
+            key={ index }
+          >
             <div
               data-testid={ `${index}-recipe-card` }
-              key={ index }
               className="cardContainer"
             >
               <p data-testid={ `${index}-card-name` }>
                 { e.strMeal }
               </p>
+
               <img
                 alt={ e.strMeal }
                 src={ e.strMealThumb }
@@ -85,24 +111,7 @@ class MealHelper extends Component {
                 className="cardImage"
               />
             </div>
-          ))
-        ) : arrayOfMeals.map((e, index) => (
-          <div
-            data-testid={ `${index}-recipe-card` }
-            key={ index }
-            className="cardContainer"
-          >
-            <p data-testid={ `${index}-card-name` }>
-              { e.strMeal }
-            </p>
-
-            <img
-              alt={ e.strMeal }
-              src={ e.strMealThumb }
-              data-testid={ `${index}-card-img` }
-              className="cardImage"
-            />
-          </div>
+          </Link>
         ))}
       </div>
     );
