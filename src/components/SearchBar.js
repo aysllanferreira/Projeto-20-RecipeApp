@@ -10,7 +10,7 @@ import {
   findByNameCocktail,
   findByFirstLetterCocktail,
 } from '../services/api';
-import RecipesDisplay from './RecipesDisplay';
+import Recipes from './Recipes';
 
 function SearchBar() {
   const { search } = useSelector((state) => state.headerSearch);
@@ -134,7 +134,7 @@ function SearchBar() {
         Buscar
       </button>
 
-      <RecipesDisplay />
+      <Recipes />
     </div>
   );
 }

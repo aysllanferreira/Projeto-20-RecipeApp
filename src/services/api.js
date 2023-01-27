@@ -18,6 +18,24 @@ const findByFirstLetter = async (letter) => {
   return data;
 };
 
+const getMeals = async () => {
+  const response = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
+  const data = await response.json();
+  return data;
+};
+
+const getCategoryMeals = async () => {
+  const response = await fetch('https://www.themealdb.com/api/json/v1/1/list.php?c=list');
+  const data = await response.json();
+  return data;
+};
+
+const getMealsByCategoryClicked = async (meal) => {
+  const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${meal}`);
+  const data = await response.json();
+  return data;
+};
+
 // Cocktails API
 
 const findByIngredientCocktail = async (ingredient) => {
@@ -38,6 +56,24 @@ const findByFirstLetterCocktail = async (letter) => {
   return data;
 };
 
+const getDrinks = async () => {
+  const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/search.php?s=');
+  const data = await response.json();
+  return data;
+};
+
+const getCategoryDrinks = async () => {
+  const response = await fetch('https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list');
+  const data = await response.json();
+  return data;
+};
+
+const getDrinksByCategoryClicked = async (drink) => {
+  const response = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=${drink}`);
+  const data = await response.json();
+  return data;
+};
+
 export {
   findByIngredient,
   findByName,
@@ -45,4 +81,10 @@ export {
   findByIngredientCocktail,
   findByNameCocktail,
   findByFirstLetterCocktail,
+  getDrinks,
+  getMeals,
+  getCategoryDrinks,
+  getCategoryMeals,
+  getDrinksByCategoryClicked,
+  getMealsByCategoryClicked,
 };
