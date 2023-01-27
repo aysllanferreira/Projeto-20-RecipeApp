@@ -9,6 +9,7 @@ function RecipeDetails() {
   const [recipe, setRecipe] = useState([]);
   const [recommendation, setRecommendation] = useState([]);
   const type = location.pathname.split('/')[1];
+  const [recipeContinue, setRecipeContinue] = useState(false);
 
   useEffect(() => {
     const types = location.pathname.split('/')[1];
@@ -22,13 +23,27 @@ function RecipeDetails() {
     }
   }, [location.pathname]);
 
+  useEffect(() => {
+    const myObj = {
+      drinks: {},
+      meals: {},
+    };
+
+    const id = location.pathname.split('/')[2];
+
+    localStorage.setItem('inProgressRecipes', JSON.stringify(myObj));
+    const recoveredObject = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    if (Object.keys(recoveredObject.drinks).includes(id)
+    || Object.keys(recoveredObject.meals).includes(id)) {
+      setRecipeContinue(true);
+    }
+  }, [location.pathname]);
+
   // Se quiserem trocar o nome dessas variaveis, pode mudar!
   // So estou descontando minha frustracao com o linter, equipe! kkk
 
   const souInimigodoLinter = -11;
   const seguraAMagia = 6;
-
-  console.log(recommendation.length);
 
   return (
     <div className="recipe-details">
@@ -111,7 +126,7 @@ function RecipeDetails() {
           type="button"
           data-testid="start-recipe-btn"
         >
-          Start Recipe
+          { recipeContinue ? 'Start Recipe' : 'Continue Recipe'}
         </button>
       </div>
     </div>
