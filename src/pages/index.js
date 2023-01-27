@@ -4,8 +4,7 @@ import Meals from './Meals';
 import Profile from './Profile';
 import FavoriteRecipes from './FavoriteRecipes';
 import DoneRecipes from './DoneRecipes';
-import DrinkPage from './DrinkPage';
-import MealPage from './MealPage';
+import RecipeDetails from './RecipeDetails';
 
-export { Drinks, Login, Meals, Profile, FavoriteRecipes, DoneRecipes, DrinkPage, MealPage,
+export { Drinks, Login, Meals, Profile, FavoriteRecipes, DoneRecipes, RecipeDetails,
 };

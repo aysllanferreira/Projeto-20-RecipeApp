@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { getCategoryDrinks, getDrinks,
   getDrinksByCategoryClicked } from '../services/api';
 
@@ -7,6 +8,8 @@ class DrinkHelper extends Component {
   state = {
     arrayOfDrinks: [],
     categories: [],
+    originalMeals: [],
+    isFiltered: false,
   };
 
   componentDidMount() {
@@ -19,6 +22,7 @@ class DrinkHelper extends Component {
     const arrayOfDrinks = await getDrinks();
     const limitedTo12 = arrayOfDrinks.drinks.slice(0, size);
     this.setState({ arrayOfDrinks: limitedTo12 });
+    this.setState({ originalMeals: limitedTo12 });
   };
 
   getObjectCategories = async () => {
@@ -29,12 +33,19 @@ class DrinkHelper extends Component {
   };
 
   handleClick = async (e) => {
-    const size = 12;
-    const response = await getDrinksByCategoryClicked(e.target.innerHTML);
-    const limitedTo12 = response.drinks.slice(0, size);
-    this.setState({
-      arrayOfDrinks: limitedTo12,
-    });
+    const { isFiltered, originalMeals } = this.state;
+    if (!isFiltered) {
+      const size = 12;
+      const response = await getDrinksByCategoryClicked(e.target.innerHTML);
+      const limitedTo12 = response.drinks.slice(0, size);
+      this.setState({
+        arrayOfDrinks: limitedTo12,
+      });
+      this.setState({ isFiltered: true });
+    } else {
+      this.setState({ arrayOfDrinks: originalMeals });
+      this.setState({ isFiltered: false });
+    }
   };
 
   render() {
@@ -58,39 +69,47 @@ class DrinkHelper extends Component {
         </button>
         { recipes.length > 0 ? (
           maxLength.map((e, index) => (
-            <div
-              data-testid={ `${index}-recipe-card` }
+            <Link
+              to={ `/drinks/${e.idDrink}` }
               key={ index }
-              className="cardContainer"
             >
-              <p data-testid={ `${index}-card-name` }>
-                { e.strDrink }
-              </p>
-              <img
-                alt={ e.strDrink }
-                src={ e.strDrinkThumb }
-                data-testid={ `${index}-card-img` }
-                className="cardImage"
-              />
-            </div>
+              <div
+                data-testid={ `${index}-recipe-card` }
+                className="cardContainer"
+              >
+                <p data-testid={ `${index}-card-name` }>
+                  { e.strDrink }
+                </p>
+                <img
+                  alt={ e.strDrink }
+                  src={ e.strDrinkThumb }
+                  data-testid={ `${index}-card-img` }
+                  className="cardImage"
+                />
+              </div>
+            </Link>
           ))
         ) : (
           arrayOfDrinks.map((e, index) => (
-            <div
-              data-testid={ `${index}-recipe-card` }
+            <Link
+              to={ `/drinks/${e.idDrink}` }
               key={ index }
-              className="cardContainer"
             >
-              <p data-testid={ `${index}-card-name` }>
-                { e.strDrink }
-              </p>
-              <img
-                alt={ e.strDrink }
-                src={ e.strDrinkThumb }
-                data-testid={ `${index}-card-img` }
-                className="cardImage"
-              />
-            </div>
+              <div
+                data-testid={ `${index}-recipe-card` }
+                className="cardContainer"
+              >
+                <p data-testid={ `${index}-card-name` }>
+                  { e.strDrink }
+                </p>
+                <img
+                  alt={ e.strDrink }
+                  src={ e.strDrinkThumb }
+                  data-testid={ `${index}-card-img` }
+                  className="cardImage"
+                />
+              </div>
+            </Link>
           ))
         )}
       </div>

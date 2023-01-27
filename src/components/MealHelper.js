@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { getCategoryMeals, getMeals, getMealsByCategoryClicked } from '../services/api';
 
 class MealHelper extends Component {
   state = {
     arrayOfMeals: [],
     categories: [],
+    originalMeals: [],
+    isFiltered: false,
   };
 
   componentDidMount() {
@@ -18,6 +21,7 @@ class MealHelper extends Component {
     const arrayOfMeals = await getMeals();
     const limitedTo12 = arrayOfMeals.meals.slice(0, size);
     this.setState({ arrayOfMeals: limitedTo12 });
+    this.setState({ originalMeals: limitedTo12 });
   };
 
   getObjectCategories = async () => {
@@ -28,12 +32,19 @@ class MealHelper extends Component {
   };
 
   handleClick = async (e) => {
-    const size = 12;
-    const response = await getMealsByCategoryClicked(e.target.innerHTML);
-    const limitedTo12 = response.meals.slice(0, size);
-    this.setState({
-      arrayOfMeals: limitedTo12,
-    });
+    const { isFiltered, originalMeals } = this.state;
+    if (!isFiltered) {
+      const size = 12;
+      const response = await getMealsByCategoryClicked(e.target.innerHTML);
+      const limitedTo12 = response.meals.slice(0, size);
+      this.setState({
+        arrayOfMeals: limitedTo12,
+      });
+      this.setState({ isFiltered: true });
+    } else {
+      this.setState({ arrayOfMeals: originalMeals });
+      this.setState({ isFiltered: false });
+    }
   };
 
   render() {
@@ -60,14 +71,39 @@ class MealHelper extends Component {
         </button>
         { maxLength.length > 0 ? (
           maxLength.map((e, index) => (
+            <Link
+              to={ `/meals/${e.idMeal}` }
+              key={ index }
+            >
+              <div
+                data-testid={ `${index}-recipe-card` }
+                className="cardContainer"
+              >
+                <p data-testid={ `${index}-card-name` }>
+                  { e.strMeal }
+                </p>
+                <img
+                  alt={ e.strMeal }
+                  src={ e.strMealThumb }
+                  data-testid={ `${index}-card-img` }
+                  className="cardImage"
+                />
+              </div>
+            </Link>
+          ))
+        ) : arrayOfMeals.map((e, index) => (
+          <Link
+            to={ `/meals/${e.idMeal}` }
+            key={ index }
+          >
             <div
               data-testid={ `${index}-recipe-card` }
-              key={ index }
               className="cardContainer"
             >
               <p data-testid={ `${index}-card-name` }>
                 { e.strMeal }
               </p>
+
               <img
                 alt={ e.strMeal }
                 src={ e.strMealThumb }
@@ -75,24 +111,7 @@ class MealHelper extends Component {
                 className="cardImage"
               />
             </div>
-          ))
-        ) : arrayOfMeals.map((e, index) => (
-          <div
-            data-testid={ `${index}-recipe-card` }
-            key={ index }
-            className="cardContainer"
-          >
-            <p data-testid={ `${index}-card-name` }>
-              { e.strMeal }
-            </p>
-
-            <img
-              alt={ e.strMeal }
-              src={ e.strMealThumb }
-              data-testid={ `${index}-card-img` }
-              className="cardImage"
-            />
-          </div>
+          </Link>
         ))}
       </div>
     );
