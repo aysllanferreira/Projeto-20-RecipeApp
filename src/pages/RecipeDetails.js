@@ -1,8 +1,120 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation, Link } from 'react-router-dom';
+import { getMealsByID, getDrinksByID,
+  getMeals, getDrinks } from '../services/api';
+import './RecipeDetails.scss';
 
 function RecipeDetails() {
+  const location = useLocation();
+  const [recipe, setRecipe] = useState([]);
+  const [recommendation, setRecommendation] = useState([]);
+  const type = location.pathname.split('/')[1];
+
+  useEffect(() => {
+    const types = location.pathname.split('/')[1];
+    const id = location.pathname.split('/')[2];
+    if (types === 'meals') {
+      getMealsByID(id).then((data) => setRecipe(data.meals));
+      getDrinks().then((data) => setRecommendation(data.drinks));
+    } else {
+      getDrinksByID(id).then((data) => setRecipe(data.drinks));
+      getMeals().then((data) => setRecommendation(data.meals));
+    }
+  }, [location.pathname]);
+
+  // Se quiserem trocar o nome dessas variaveis, pode mudar!
+  // So estou descontando minha frustracao com o linter, equipe! kkk
+
+  const souInimigodoLinter = -11;
+  const seguraAMagia = 6;
+
+  console.log(recommendation.length);
+
   return (
-    <div>RecipeDetails</div>
+    <div className="recipe-details">
+      <h1>Recipe Details</h1>
+      {recipe.map((item, index) => (
+        <div key={ index } className="recipe-details__container">
+          <img
+            src={ item.strMealThumb || item.strDrinkThumb }
+            alt="recipe"
+            data-testid="recipe-photo"
+            className="recipe-details__container__img"
+          />
+          <h2 data-testid="recipe-title">{item.strMeal || item.strDrink}</h2>
+          <h3 data-testid="recipe-category">{item.strCategory}</h3>
+          {item.strAlcoholic && (
+            <h3 data-testid="recipe-category">{item.strAlcoholic}</h3>
+          )}
+          <h3>Ingredients</h3>
+          <ul>
+            {Object.keys(item).reduce((acc, key) => {
+              if (key.includes('Ingredient') && item[key] !== '' && item[key] !== null) {
+                return [...acc, item[key]];
+              }
+              return acc;
+            }, []).map((ingredient, i) => (
+              <li
+                key={ i }
+                data-testid={ `${i}-ingredient-name-and-measure` }
+              >
+                {`${ingredient} - ${item[`strMeasure${i + 1}`]}`}
+              </li>
+            ))}
+          </ul>
+          <h3>Instructions</h3>
+          <p data-testid="instructions">{item.strInstructions}</p>
+          {item.strYoutube && (
+            <iframe
+              data-testid="video"
+              title="recipe"
+              width="360"
+              height="315"
+              src={ `https://www.youtube.com/embed/${item.strYoutube.slice(souInimigodoLinter)}` }
+            />
+          )}
+        </div>
+      ))}
+      <h3>Recommendations</h3>
+      <div className="recipe-details__recommendations">
+        { recommendation.length > 0
+        && recommendation.slice(0, seguraAMagia).map((item, index) => (
+
+          <Link
+            key={ index }
+            to={
+              `/${type === 'meals' ? 'drinks' : 'meals'}/${item.idMeal || item.idDrink}`
+            }
+          >
+            <div
+              key={ index }
+              data-testid={ `${index}-recommendation-card` }
+              className="recipe-details__recommendations__card"
+            >
+              <img
+                src={ item.strMealThumb || item.strDrinkThumb }
+                alt="recipe"
+                data-testid={ `${index}-card-img` }
+              />
+              <p
+                data-testid={ `${index}-recommendation-title` }
+              >
+                {item.strMeal || item.strDrink}
+              </p>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      <div className="recipe-details__buttons">
+        <button
+          type="button"
+          data-testid="start-recipe-btn"
+        >
+          Start Recipe
+        </button>
+      </div>
+    </div>
   );
 }
 

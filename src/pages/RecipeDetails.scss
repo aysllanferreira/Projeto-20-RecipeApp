@@ -1,0 +1,91 @@
+.recipe-details {
+  &__container {
+    img {
+      width: 400px;
+      border-radius: 10px;
+    }
+  }
+
+  &__recommendations {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    img {
+      width: 180px;
+      height: 180px;
+    }
+  }
+
+  &__buttons {
+    // Fixed at the bottom of the page
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    z-index: 1;
+
+    button {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 50px;
+      border-radius: 10px;
+      border: none;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #fff;
+      background-color: #ff6b6b;
+      cursor: pointer;
+    }
+
+    button:first-child {
+      margin-right: 10px;
+    }
+
+    button:last-child {
+      margin-left: 10px;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    button:disabled:hover {
+      background-color: #ccc;
+    }
+
+    button:hover {
+      background-color: #ff4d4d;
+    }
+
+    button:active {
+      background-color: #ff4d4d;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    &__container {
+      img {
+        width: 100%;
+      }
+    }
+    overflow-x: scroll;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}

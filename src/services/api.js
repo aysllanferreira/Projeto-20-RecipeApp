@@ -74,6 +74,20 @@ const getDrinksByCategoryClicked = async (drink) => {
   return data;
 };
 
+// Fetch by ID
+
+const getMealsByID = async (id) => {
+  const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
+  const data = await response.json();
+  return data;
+};
+
+const getDrinksByID = async (id) => {
+  const response = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`);
+  const data = await response.json();
+  return data;
+};
+
 export {
   findByIngredient,
   findByName,
@@ -87,4 +101,6 @@ export {
   getCategoryMeals,
   getDrinksByCategoryClicked,
   getMealsByCategoryClicked,
+  getMealsByID,
+  getDrinksByID,
 };
