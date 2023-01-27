@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getMealsByID, getDrinksByID } from '../services/api';
+import { getMealsByID, getDrinksByID,
+  recommendMeals, recommendDrinks } from '../services/api';
 
 function RecipeDetails() {
   const location = useLocation();
   const [recipe, setRecipe] = useState([]);
+  const [recommendation, setRecommendation] = useState([]);
 
   useEffect(() => {
     const type = location.pathname.split('/')[1];
     const id = location.pathname.split('/')[2];
     if (type === 'meals') {
       getMealsByID(id).then((data) => setRecipe(data.meals));
+      recommendDrinks().then((data) => setRecommendation(data.drinks));
     } else {
       getDrinksByID(id).then((data) => setRecipe(data.drinks));
+      recommendMeals().then((data) => setRecommendation(data.meals));
     }
   }, [location.pathname]);
 
@@ -20,6 +24,8 @@ function RecipeDetails() {
   // So estou descontando minha frustracao com o linter, equipe! kkk
 
   const souInimigodoLinter = -11;
+
+  console.log(recommendation);
 
   return (
     <div>
@@ -39,7 +45,7 @@ function RecipeDetails() {
           <h3>Ingredients</h3>
           <ul>
             {Object.keys(item).reduce((acc, key) => {
-              if (key.includes('Ingredient') && item[key] !== '') {
+              if (key.includes('Ingredient') && item[key] !== '' && item[key] !== null) {
                 return [...acc, item[key]];
               }
               return acc;
