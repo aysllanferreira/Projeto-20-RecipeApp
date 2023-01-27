@@ -7,6 +7,8 @@ class DrinkHelper extends Component {
   state = {
     arrayOfDrinks: [],
     categories: [],
+    originalMeals: [],
+    isFiltered: false,
   };
 
   componentDidMount() {
@@ -19,6 +21,7 @@ class DrinkHelper extends Component {
     const arrayOfDrinks = await getDrinks();
     const limitedTo12 = arrayOfDrinks.drinks.slice(0, size);
     this.setState({ arrayOfDrinks: limitedTo12 });
+    this.setState({ originalMeals: limitedTo12 });
   };
 
   getObjectCategories = async () => {
@@ -29,12 +32,19 @@ class DrinkHelper extends Component {
   };
 
   handleClick = async (e) => {
-    const size = 12;
-    const response = await getDrinksByCategoryClicked(e.target.innerHTML);
-    const limitedTo12 = response.drinks.slice(0, size);
-    this.setState({
-      arrayOfDrinks: limitedTo12,
-    });
+    const { isFiltered, originalMeals } = this.state;
+    if (!isFiltered) {
+      const size = 12;
+      const response = await getDrinksByCategoryClicked(e.target.innerHTML);
+      const limitedTo12 = response.drinks.slice(0, size);
+      this.setState({
+        arrayOfDrinks: limitedTo12,
+      });
+      this.setState({ isFiltered: true });
+    } else {
+      this.setState({ arrayOfDrinks: originalMeals });
+      this.setState({ isFiltered: false });
+    }
   };
 
   render() {

@@ -6,6 +6,8 @@ class MealHelper extends Component {
   state = {
     arrayOfMeals: [],
     categories: [],
+    originalMeals: [],
+    isFiltered: false,
   };
 
   componentDidMount() {
@@ -18,6 +20,7 @@ class MealHelper extends Component {
     const arrayOfMeals = await getMeals();
     const limitedTo12 = arrayOfMeals.meals.slice(0, size);
     this.setState({ arrayOfMeals: limitedTo12 });
+    this.setState({ originalMeals: limitedTo12 });
   };
 
   getObjectCategories = async () => {
@@ -28,12 +31,19 @@ class MealHelper extends Component {
   };
 
   handleClick = async (e) => {
-    const size = 12;
-    const response = await getMealsByCategoryClicked(e.target.innerHTML);
-    const limitedTo12 = response.meals.slice(0, size);
-    this.setState({
-      arrayOfMeals: limitedTo12,
-    });
+    const { isFiltered, originalMeals } = this.state;
+    if (!isFiltered) {
+      const size = 12;
+      const response = await getMealsByCategoryClicked(e.target.innerHTML);
+      const limitedTo12 = response.meals.slice(0, size);
+      this.setState({
+        arrayOfMeals: limitedTo12,
+      });
+      this.setState({ isFiltered: true });
+    } else {
+      this.setState({ arrayOfMeals: originalMeals });
+      this.setState({ isFiltered: false });
+    }
   };
 
   render() {
