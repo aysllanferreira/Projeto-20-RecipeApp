@@ -11,6 +11,7 @@ function RecipeDetails() {
   const type = location.pathname.split('/')[1];
   const [recipeContinue, setRecipeContinue] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     const types = location.pathname.split('/')[1];
@@ -87,6 +88,18 @@ function RecipeDetails() {
     }
   };
 
+  useEffect(() => {
+    const getStorage = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    if (getStorage !== null) {
+      const filterStorage = getStorage.filter((item) => item.id === id);
+      if (filterStorage.length === 1) {
+        setIsFavorite(true);
+      } else {
+        setIsFavorite(false);
+      }
+    }
+  }, [recipe, id]);
+
   return (
     <div className="recipe-details">
       <button
@@ -100,6 +113,9 @@ function RecipeDetails() {
         type="button"
         data-testid="favorite-btn"
         onClick={ saveRecipeLocalStorage }
+        src={
+          isFavorite ? '../images/blackHeartIcon.svg' : '../images/whiteHeartIcon.svg'
+        }
       >
         Favoritar
       </button>
