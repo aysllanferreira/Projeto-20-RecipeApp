@@ -4,6 +4,7 @@ import LoginProvider from './context/LoginContext';
 import { Drinks, Login, Meals, Profile, FavoriteRecipes, DoneRecipes,
   RecipeDetails,
 } from './pages';
+import RecipesInProgress from './pages/RecipesInProgress';
 
 function App() {
   return (
@@ -17,6 +18,16 @@ function App() {
         <Route path="/favorite-recipes" exact component={ FavoriteRecipes } />
         <Route path="/drinks/:id" exact component={ RecipeDetails } />
         <Route path="/meals/:id" exact component={ RecipeDetails } />
+        <Route
+          path="/meals/:id/in-progress"
+          exact
+          component={ RecipesInProgress }
+        />
+        <Route
+          path="/drinks/:id/in-progress"
+          exact
+          component={ RecipesInProgress }
+        />
       </Switch>
     </LoginProvider>
   );
