@@ -31,15 +31,22 @@ function RecipeDetails() {
       meals: {},
     };
 
+    if (localStorage.getItem('inProgressRecipes') === null) {
+      localStorage.setItem('inProgressRecipes', JSON.stringify(myObj));
+    }
+
+    const getStorage = JSON.parse(localStorage.getItem('inProgressRecipes'));
+
     const id = location.pathname.split('/')[2];
 
-    localStorage.setItem('inProgressRecipes', JSON.stringify(myObj));
-    const recoveredObject = JSON.parse(localStorage.getItem('inProgressRecipes'));
-    if (Object.keys(recoveredObject.drinks).includes(id)
-    || Object.keys(recoveredObject.meals).includes(id)) {
+    if (type === 'meals' && getStorage.meals[id] === undefined) {
       setRecipeContinue(true);
+    } else if (type === 'drinks' && getStorage.drinks[id] === undefined) {
+      setRecipeContinue(true);
+    } else {
+      setRecipeContinue(false);
     }
-  }, [location.pathname]);
+  }, [location.pathname, type]);
 
   // Se quiserem trocar o nome dessas variaveis, pode mudar!
   // So estou descontando minha frustracao com o linter, equipe! kkk
@@ -49,9 +56,9 @@ function RecipeDetails() {
   const id = location.pathname.split('/')[2];
 
   const copyLinkToClipboard = () => {
-    const url = window.location.href;
-    navigator.clipboard.writeText(url);
     setCopied(true);
+    const { href } = window.location;
+    navigator.clipboard.writeText(href);
   };
 
   const setFavorite = () => {
@@ -64,7 +71,6 @@ function RecipeDetails() {
     } else {
       setIsFavorite(false);
     }
-    console.log(isFavorite);
   };
 
   useEffect(() => {
@@ -99,13 +105,30 @@ function RecipeDetails() {
       setIsFavorite(!isFavorite);
     } else {
       const filterStorage = getStorage.filter((item) => item.id !== getId);
+
       if (filterStorage.length === getStorage.length) {
         localStorage.setItem('favoriteRecipes', JSON.stringify([...getStorage, myObj]));
-      } else {
+        setIsFavorite(!isFavorite);
+      }
+
+      if (filterStorage.length < getStorage.length) {
         localStorage.setItem('favoriteRecipes', JSON.stringify(filterStorage));
+        setIsFavorite(!isFavorite);
       }
     }
     setFavorite();
+  };
+
+  const handleStartRecipe = () => {
+    const getStorage = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    const idx = location.pathname.split('/')[2];
+    if (type === 'meals') {
+      getStorage.meals[idx] = [];
+      localStorage.setItem('inProgressRecipes', JSON.stringify(getStorage));
+    } else {
+      getStorage.drinks[idx] = [];
+      localStorage.setItem('inProgressRecipes', JSON.stringify(getStorage));
+    }
   };
 
   return (
@@ -132,7 +155,7 @@ function RecipeDetails() {
           alt="favorite"
         />
       </button>
-      {copied && <p>Link copied!</p>}
+      {copied && <p data--testid="copied-link">Link copied!</p>}
       <h1>Recipe Details</h1>
       {recipe.map((item, index) => (
         <div key={ index } className="recipe-details__container">
@@ -216,6 +239,7 @@ function RecipeDetails() {
           <button
             type="button"
             data-testid="start-recipe-btn"
+            onClick={ handleStartRecipe }
           >
             { recipeContinue ? 'Start Recipe' : 'Continue Recipe'}
           </button>
