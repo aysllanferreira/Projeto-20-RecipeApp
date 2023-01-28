@@ -8,24 +8,28 @@ import headerSearchSlice from '../../redux/reducers/headerSearch';
 
 const renderWithRouterAndRedux = (
   component,
-  { route = '/', history = createMemoryHistory({ initialEntries: [route] }) } = {},
-) => {
-  const store = configureStore({
-    reducer: {
-      headerSearch: headerSearchSlice,
-    },
-  });
-
-  return {
-    ...render(
-      <Provider store={ store }>
-        <Router history={ history }>
-          {component}
-        </Router>
-      </Provider>,
-    ),
-    history,
-  };
-};
+  {
+    initialState,
+    store = configureStore({
+      reducer: {
+        headerSearch: headerSearchSlice,
+      },
+      preloadedState: initialState,
+    }),
+    route = '/',
+  } = {},
+  {
+    history = createMemoryHistory({ initialEntries: [route] }),
+  } = {},
+) => ({
+  ...render(
+    <Provider store={ store }>
+      <Router history={ history }>
+        {component}
+      </Router>
+    </Provider>,
+  ),
+  history,
+});
 
 export default renderWithRouterAndRedux;
