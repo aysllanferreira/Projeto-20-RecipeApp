@@ -1,8 +1,10 @@
 import React from 'react';
-import { screen, within, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import renderWithRouter from './renderWithRouter/renderWithRouter';
 import App from '../App';
+
+const recipeCard = '0-recipe-card';
 
 describe('Testa o componente DrinkHelper', () => {
   it('Testa os filtros da tela de bebida', async () => {
@@ -26,7 +28,7 @@ describe('Testa o componente DrinkHelper', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('0-recipe-card')).toBeInTheDocument();
+      expect(screen.getByTestId(recipeCard)).toBeInTheDocument();
     });
 
     const getAllCategories = await screen.findByTestId('All-category-filter');
@@ -35,7 +37,7 @@ describe('Testa o componente DrinkHelper', () => {
     userEvent.click(getShakeCategory);
 
     await waitFor(() => {
-      expect(screen.getByTestId('0-recipe-card')).toBeInTheDocument();
+      expect(screen.getByTestId(recipeCard)).toBeInTheDocument();
     });
 
     userEvent.click(getAllCategories);
@@ -44,7 +46,7 @@ describe('Testa o componente DrinkHelper', () => {
     userEvent.click(getOrdinaryDrinkCategory);
 
     await waitFor(() => {
-      expect(screen.getByTestId('0-recipe-card')).toBeInTheDocument();
+      expect(screen.getByTestId(recipeCard)).toBeInTheDocument();
     });
   });
 
@@ -73,10 +75,10 @@ describe('Testa o componente DrinkHelper', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('0-recipe-card')).toBeInTheDocument();
+      expect(screen.getByTestId(recipeCard)).toBeInTheDocument();
     });
 
-    const getFirstCard = await screen.findByTestId('0-recipe-card');
+    const getFirstCard = await screen.findByTestId(recipeCard);
 
     userEvent.click(getFirstCard);
 

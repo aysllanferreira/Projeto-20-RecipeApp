@@ -97,9 +97,7 @@ function RecipeDetails() {
       name: getName,
       image: getImg,
     };
-
     const getStorage = JSON.parse(localStorage.getItem('favoriteRecipes'));
-
     if (getStorage === null) {
       localStorage.setItem('favoriteRecipes', JSON.stringify([myObj]));
       setIsFavorite(!isFavorite);
@@ -118,7 +116,6 @@ function RecipeDetails() {
     }
     setFavorite();
   };
-
   const handleStartRecipe = () => {
     const getStorage = JSON.parse(localStorage.getItem('inProgressRecipes'));
     const idx = location.pathname.split('/')[2];

@@ -6,6 +6,7 @@ import App from '../App';
 import chickenMock from './mocks/chickenMock';
 
 const recipePhoto = 'recipe-photo';
+const drinkzinhos = '/drinks/15997';
 
 describe('Testa se o link eh copiado para o clipboard e o texto aparece no html', () => {
   it('Testa se favorita e desfavorita do localStorage', async () => {
@@ -38,7 +39,7 @@ describe('Testa se o link eh copiado para o clipboard e o texto aparece no html'
         recipes: chickenMock,
       },
     };
-    renderWithRouter(<App />, { initialState, route: '/drinks/15997' });
+    renderWithRouter(<App />, { initialState, route: drinkzinhos });
 
     await waitFor(() => expect(screen.getByTestId(recipePhoto)).toBeInTheDocument());
 
@@ -96,7 +97,7 @@ describe('Testa se o link eh copiado para o clipboard e o texto aparece no html'
         recipes: chickenMock,
       },
     };
-    renderWithRouter(<App />, { initialState, route: '/drinks/15997' });
+    renderWithRouter(<App />, { initialState, route: drinkzinhos });
 
     await waitFor(() => expect(screen.getByTestId(recipePhoto)).toBeInTheDocument());
 
@@ -118,7 +119,7 @@ describe('Testa se o link eh copiado para o clipboard e o texto aparece no html'
         recipes: chickenMock,
       },
     };
-    renderWithRouter(<App />, { initialState, route: '/drinks/15997' });
+    renderWithRouter(<App />, { initialState, route: drinkzinhos });
 
     await waitFor(() => expect(screen.getByTestId(recipePhoto)).toBeInTheDocument());
 
