@@ -53,6 +53,40 @@ function RecipeDetails() {
     setCopied(true);
   };
 
+  const saveRecipeLocalStorage = () => {
+    const copyRecipe = [...recipe][0];
+    const getId = copyRecipe.idMeal || copyRecipe.idDrink;
+    const getTypes = copyRecipe.strMeal ? 'meal' : 'drink';
+    const getArea = copyRecipe.strArea ? copyRecipe.strArea : '';
+    const getCategory = copyRecipe.strCategory ? copyRecipe.strCategory : '';
+    const isAlcoholic = copyRecipe.strAlcoholic ? copyRecipe.strAlcoholic : '';
+    const getName = copyRecipe.strMeal || copyRecipe.strDrink;
+    const getImg = copyRecipe.strMealThumb || copyRecipe.strDrinkThumb;
+
+    const myObj = {
+      id: getId,
+      type: getTypes,
+      nationality: getArea,
+      category: getCategory,
+      alcoholicOrNot: isAlcoholic,
+      name: getName,
+      image: getImg,
+    };
+
+    const getStorage = JSON.parse(localStorage.getItem('favoriteRecipes'));
+
+    if (getStorage === null) {
+      localStorage.setItem('favoriteRecipes', JSON.stringify([myObj]));
+    } else {
+      const filterStorage = getStorage.filter((item) => item.id !== getId);
+      if (filterStorage.length === getStorage.length) {
+        localStorage.setItem('favoriteRecipes', JSON.stringify([...getStorage, myObj]));
+      } else {
+        localStorage.setItem('favoriteRecipes', JSON.stringify(filterStorage));
+      }
+    }
+  };
+
   return (
     <div className="recipe-details">
       <button
@@ -65,6 +99,7 @@ function RecipeDetails() {
       <button
         type="button"
         data-testid="favorite-btn"
+        onClick={ saveRecipeLocalStorage }
       >
         Favoritar
       </button>
