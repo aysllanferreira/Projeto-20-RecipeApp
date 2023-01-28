@@ -54,6 +54,24 @@ function RecipeDetails() {
     setCopied(true);
   };
 
+  const setFavorite = () => {
+    const getStorage = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    if (getStorage !== null && getStorage.length > 0) {
+      const filterStorage = getStorage.some((item) => item.id === id);
+      if (filterStorage) {
+        setIsFavorite(true);
+      }
+    } else {
+      setIsFavorite(false);
+    }
+    console.log(isFavorite);
+  };
+
+  useEffect(() => {
+    setFavorite();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const saveRecipeLocalStorage = () => {
     const copyRecipe = [...recipe][0];
     const getId = copyRecipe.idMeal || copyRecipe.idDrink;
@@ -78,6 +96,7 @@ function RecipeDetails() {
 
     if (getStorage === null) {
       localStorage.setItem('favoriteRecipes', JSON.stringify([myObj]));
+      setIsFavorite(!isFavorite);
     } else {
       const filterStorage = getStorage.filter((item) => item.id !== getId);
       if (filterStorage.length === getStorage.length) {
@@ -86,19 +105,8 @@ function RecipeDetails() {
         localStorage.setItem('favoriteRecipes', JSON.stringify(filterStorage));
       }
     }
+    setFavorite();
   };
-
-  useEffect(() => {
-    const getStorage = JSON.parse(localStorage.getItem('favoriteRecipes'));
-    if (getStorage !== null) {
-      const filterStorage = getStorage.filter((item) => item.id === id);
-      if (filterStorage.length === 1) {
-        setIsFavorite(true);
-      } else {
-        setIsFavorite(false);
-      }
-    }
-  }, [recipe, id]);
 
   return (
     <div className="recipe-details">
@@ -117,7 +125,12 @@ function RecipeDetails() {
           isFavorite ? '../images/blackHeartIcon.svg' : '../images/whiteHeartIcon.svg'
         }
       >
-        Favoritar
+        <img
+          src={
+            isFavorite ? '../images/blackHeartIcon.svg' : '../images/whiteHeartIcon.svg'
+          }
+          alt="favorite"
+        />
       </button>
       {copied && <p>Link copied!</p>}
       <h1>Recipe Details</h1>
