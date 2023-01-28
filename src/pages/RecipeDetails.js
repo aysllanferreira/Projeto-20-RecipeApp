@@ -10,6 +10,7 @@ function RecipeDetails() {
   const [recommendation, setRecommendation] = useState([]);
   const type = location.pathname.split('/')[1];
   const [recipeContinue, setRecipeContinue] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const types = location.pathname.split('/')[1];
@@ -46,13 +47,20 @@ function RecipeDetails() {
   const seguraAMagia = 6;
   const id = location.pathname.split('/')[2];
 
+  const copyLinkToClipboard = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+  };
+
   return (
     <div className="recipe-details">
       <button
         type="button"
         data-testid="share-btn"
+        onClick={ copyLinkToClipboard }
       >
-        Compartilhar
+        <img src="../images/searchIcon.svg" alt="share" />
       </button>
       <button
         type="button"
@@ -60,6 +68,7 @@ function RecipeDetails() {
       >
         Favoritar
       </button>
+      {copied && <p>Link copied!</p>}
       <h1>Recipe Details</h1>
       {recipe.map((item, index) => (
         <div key={ index } className="recipe-details__container">
