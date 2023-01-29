@@ -62,8 +62,15 @@ function RecipesInProgress() {
             {Object.keys(recipe).map((key, index) => {
               if (key.includes('Ingredient') && recipe[key]) {
                 return (
-                  <li key={ index } data-testid={ `${index}-ingredient-step` }>
-                    {recipe[key]}
+                  <li key={ index }>
+                    <label htmlFor={ key } data-testid={ `${index}-ingredient-step` }>
+                      <input
+                        type="checkbox"
+                        id={ key }
+                      />
+                      {recipe[key]}
+                    </label>
+
                   </li>
                 );
               }
