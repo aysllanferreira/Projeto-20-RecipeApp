@@ -82,7 +82,6 @@ function RecipesInProgress() {
           <ul>
             {Object.keys(recipe).map((key, index) => {
               if (key.includes('Ingredient') && recipe[key]) {
-                console.log(storageChecked, `${key.split('Ingredient')[1] - 1}-ingredient-step`);
                 return (
                   <li key={ index }>
                     <label
