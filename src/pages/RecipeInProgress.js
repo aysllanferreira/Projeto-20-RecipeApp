@@ -11,8 +11,23 @@ function RecipesInProgress() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [copied, setCopied] = useState(false);
   const history = useHistory();
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const id = history.location.pathname.split('/')[2];
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const checkifAllChecked = () => {
+    const allChecked = document.querySelectorAll('input[type="checkbox"]:checked');
+    const allChecks = document.querySelectorAll('input[type="checkbox"]');
+    console.log(allChecked);
+    if (allChecks && allChecks.length === allChecked.length) {
+      console.log('entrou');
+      setIsDisabled(true);
+    } else {
+      console.log('nao entrou');
+      setIsDisabled(false);
+    }
+  };
 
   useEffect(() => {
     const getType = history.location.pathname.split('/')[1];
@@ -42,7 +57,12 @@ function RecipesInProgress() {
       localStorage.setItem(id, JSON
         .stringify({ ...JSON.parse(localStorage.getItem(id)), [pNodeTestId]: false }));
     }
+    checkifAllChecked();
   };
+
+  useEffect(() => {
+    checkifAllChecked();
+  }, [checkifAllChecked]);
 
   useEffect(() => {
     const getStorage = JSON.parse(localStorage.getItem(id));
@@ -105,6 +125,7 @@ function RecipesInProgress() {
       name: getName,
       image: getImg,
     };
+
     const getStorage = JSON.parse(localStorage.getItem('favoriteRecipes'));
     if (getStorage === null) {
       localStorage.setItem('favoriteRecipes', JSON.stringify([myObj]));
@@ -205,6 +226,7 @@ function RecipesInProgress() {
           <button
             type="button"
             data-testid="finish-recipe-btn"
+            disabled={ !isDisabled }
           >
             Finish Recipe
           </button>
