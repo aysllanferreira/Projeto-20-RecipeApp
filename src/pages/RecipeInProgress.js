@@ -41,10 +41,18 @@ function RecipesInProgress() {
 
   useEffect(() => {
     const getStorage = JSON.parse(localStorage.getItem(id));
-    if (getStorage) {
+    if (getStorage && Object.keys(recipe).length > 0) {
       setStorageChecked(getStorage);
+
+      // style the checked items
+      const checkedItems = Object.keys(getStorage).filter((key) => getStorage[key]);
+      checkedItems.forEach((item) => {
+        const node = document.querySelector(`[data-testid="${item}"]`);
+        node.style.textDecoration = 'line-through solid rgb(0, 0, 0)';
+        node.childNodes[0].checked = true;
+      });
     }
-  }, [id]);
+  }, [id, recipe]);
 
   return (
     <div>
