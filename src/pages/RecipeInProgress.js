@@ -4,7 +4,11 @@ import { getMealsByID, getDrinksByID } from '../services/api';
 
 function RecipesInProgress() {
   const [recipe, setRecipe] = useState([]);
+  const [storageChecked, setStorageChecked] = useState([]);
+  const [clicked, setClicked] = useState(true);
   const history = useHistory();
+
+  const id = history.location.pathname.split('/')[2];
 
   useEffect(() => {
     const getType = history.location.pathname.split('/')[1];
@@ -19,13 +23,39 @@ function RecipesInProgress() {
 
   const handleChange = ({ target }) => {
     const targetChecked = target.checked;
+    const { parentNode } = target;
+
+    const pNodeTestId = parentNode.getAttribute('data-testid');
 
     if (targetChecked) {
-      target.parentNode.style.textDecoration = 'line-through solid rgb(0, 0, 0)';
+      parentNode.style.textDecoration = 'line-through solid rgb(0, 0, 0)';
+      // save in local storage
+      localStorage.setItem(id, JSON
+        .stringify({ ...JSON.parse(localStorage.getItem(id)), [pNodeTestId]: true }));
+      setClicked(true);
     } else {
-      target.parentNode.style.textDecoration = 'none';
+      parentNode.style.textDecoration = 'none';
+      // save in local storage
+      localStorage.setItem(id, JSON
+        .stringify({ ...JSON.parse(localStorage.getItem(id)), [pNodeTestId]: false }));
+      setClicked(true);
     }
   };
+
+  useEffect(() => {
+    // get from local storage and style the checkbox
+    const storage = JSON.parse(localStorage.getItem(id));
+    if (storage) {
+      setStorageChecked(storage);
+      const keys = Object.keys(storage);
+      keys.forEach((key) => {
+        if (storage[key]) {
+          const checkbox = document.querySelector(`[data-testid="${key}"]`);
+          checkbox.style.textDecoration = 'line-through solid rgb(0, 0, 0)';
+        }
+      });
+    }
+  }, [clicked, id]);
 
   return (
     <div>
@@ -75,6 +105,8 @@ function RecipesInProgress() {
                         name={ key }
                         value={ recipe[key] }
                         onChange={ handleChange }
+                        checked={ storageChecked[`${key
+                          .split('Ingredient')[1] - 1}-ingredient-step`] }
                       />
 
                       {recipe[key]}
