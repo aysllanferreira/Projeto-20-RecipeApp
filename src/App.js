@@ -4,7 +4,7 @@ import LoginProvider from './context/LoginContext';
 import { Drinks, Login, Meals, Profile, FavoriteRecipes, DoneRecipes,
   RecipeDetails,
 } from './pages';
-import RecipesInProgress from './pages/RecipesInProgress';
+import RecipesInProgress from './pages/RecipeInProgress';
 
 function App() {
   return (
