@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useLocation, useHistory } from 'react-router-dom';
-import { setRecipe } from '../redux/reducers/headerSearch';
+import { useLocation, useHistory, Link } from 'react-router-dom';
+import { setLocation, setRecipe } from '../redux/reducers/headerSearch';
 import {
   findByIngredient,
   findByName,
@@ -20,6 +20,10 @@ function SearchBar() {
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setLocation(location.pathname));
+  }, [location, dispatch]);
 
   const showResults = async (byIngredient, byName, byFirstLetter) => {
     if (checked === 'ingredient') {
@@ -89,6 +93,12 @@ function SearchBar() {
 
   return (
     <div style={ { display: 'flex', flexDirection: 'column' } }>
+      <Link
+        to="/drinks"
+        data-testid="drinks-btn"
+      >
+        Drinks
+      </Link>
       <label htmlFor="ingredient-radio">
         Ingredient
         <input

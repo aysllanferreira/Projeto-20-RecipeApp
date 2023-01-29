@@ -10,6 +10,8 @@ function RecipeDetails() {
   const [recommendation, setRecommendation] = useState([]);
   const type = location.pathname.split('/')[1];
   const [recipeContinue, setRecipeContinue] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     const types = location.pathname.split('/')[1];
@@ -29,15 +31,22 @@ function RecipeDetails() {
       meals: {},
     };
 
+    if (localStorage.getItem('inProgressRecipes') === null) {
+      localStorage.setItem('inProgressRecipes', JSON.stringify(myObj));
+    }
+
+    const getStorage = JSON.parse(localStorage.getItem('inProgressRecipes'));
+
     const id = location.pathname.split('/')[2];
 
-    localStorage.setItem('inProgressRecipes', JSON.stringify(myObj));
-    const recoveredObject = JSON.parse(localStorage.getItem('inProgressRecipes'));
-    if (Object.keys(recoveredObject.drinks).includes(id)
-    || Object.keys(recoveredObject.meals).includes(id)) {
+    if (type === 'meals' && getStorage.meals[id] === undefined) {
       setRecipeContinue(true);
+    } else if (type === 'drinks' && getStorage.drinks[id] === undefined) {
+      setRecipeContinue(true);
+    } else {
+      setRecipeContinue(false);
     }
-  }, [location.pathname]);
+  }, [location.pathname, type]);
 
   // Se quiserem trocar o nome dessas variaveis, pode mudar!
   // So estou descontando minha frustracao com o linter, equipe! kkk
@@ -46,20 +55,104 @@ function RecipeDetails() {
   const seguraAMagia = 6;
   const id = location.pathname.split('/')[2];
 
+  const copyLinkToClipboard = () => {
+    setCopied(true);
+    const { href } = window.location;
+    navigator.clipboard.writeText(href);
+  };
+
+  const setFavorite = () => {
+    const getStorage = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    if (getStorage !== null && getStorage.length > 0) {
+      const filterStorage = getStorage.some((item) => item.id === id);
+      if (filterStorage) {
+        setIsFavorite(true);
+      }
+    } else {
+      setIsFavorite(false);
+    }
+  };
+
+  useEffect(() => {
+    setFavorite();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const saveRecipeLocalStorage = () => {
+    const copyRecipe = [...recipe][0];
+    const getId = copyRecipe.idMeal || copyRecipe.idDrink;
+    const getTypes = copyRecipe.strMeal ? 'meal' : 'drink';
+    const getArea = copyRecipe.strArea ? copyRecipe.strArea : '';
+    const getCategory = copyRecipe.strCategory ? copyRecipe.strCategory : '';
+    const isAlcoholic = copyRecipe.strAlcoholic ? copyRecipe.strAlcoholic : '';
+    const getName = copyRecipe.strMeal || copyRecipe.strDrink;
+    const getImg = copyRecipe.strMealThumb || copyRecipe.strDrinkThumb;
+
+    const myObj = {
+      id: getId,
+      type: getTypes,
+      nationality: getArea,
+      category: getCategory,
+      alcoholicOrNot: isAlcoholic,
+      name: getName,
+      image: getImg,
+    };
+    const getStorage = JSON.parse(localStorage.getItem('favoriteRecipes'));
+    if (getStorage === null) {
+      localStorage.setItem('favoriteRecipes', JSON.stringify([myObj]));
+      setIsFavorite(!isFavorite);
+    } else {
+      const filterStorage = getStorage.filter((item) => item.id !== getId);
+
+      if (filterStorage.length === getStorage.length) {
+        localStorage.setItem('favoriteRecipes', JSON.stringify([...getStorage, myObj]));
+        setIsFavorite(!isFavorite);
+      }
+
+      if (filterStorage.length < getStorage.length) {
+        localStorage.setItem('favoriteRecipes', JSON.stringify(filterStorage));
+        setIsFavorite(!isFavorite);
+      }
+    }
+    setFavorite();
+  };
+  const handleStartRecipe = () => {
+    const getStorage = JSON.parse(localStorage.getItem('inProgressRecipes'));
+    const idx = location.pathname.split('/')[2];
+    if (type === 'meals') {
+      getStorage.meals[idx] = recipe;
+      localStorage.setItem('inProgressRecipes', JSON.stringify(getStorage));
+    } else {
+      getStorage.drinks[idx] = recipe;
+      localStorage.setItem('inProgressRecipes', JSON.stringify(getStorage));
+    }
+  };
+
   return (
     <div className="recipe-details">
       <button
         type="button"
         data-testid="share-btn"
+        onClick={ copyLinkToClipboard }
       >
-        Compartilhar
+        <img src="../images/searchIcon.svg" alt="share" />
       </button>
       <button
         type="button"
         data-testid="favorite-btn"
+        onClick={ saveRecipeLocalStorage }
+        src={
+          isFavorite ? '../images/blackHeartIcon.svg' : '../images/whiteHeartIcon.svg'
+        }
       >
-        Favoritar
+        <img
+          src={
+            isFavorite ? '../images/blackHeartIcon.svg' : '../images/whiteHeartIcon.svg'
+          }
+          alt="favorite"
+        />
       </button>
+      {copied && <p data--testid="copied-link">Link copied!</p>}
       <h1>Recipe Details</h1>
       {recipe.map((item, index) => (
         <div key={ index } className="recipe-details__container">
@@ -143,6 +236,7 @@ function RecipeDetails() {
           <button
             type="button"
             data-testid="start-recipe-btn"
+            onClick={ handleStartRecipe }
           >
             { recipeContinue ? 'Start Recipe' : 'Continue Recipe'}
           </button>

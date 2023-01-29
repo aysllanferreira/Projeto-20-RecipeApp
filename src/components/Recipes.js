@@ -1,12 +1,14 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import DrinkHelper from './DrinkHelper';
 import MealHelper from './MealHelper';
 
 function RecipesDisplay() {
+  const { location } = useSelector((state) => state.headerSearch);
+
   return (
     <div>
-      { window.location.pathname === '/meals' && <MealHelper /> }
-      { window.location.pathname === '/drinks' && <DrinkHelper /> }
+      { location === '/meals' ? <MealHelper /> : <DrinkHelper /> }
     </div>
   );
 }
