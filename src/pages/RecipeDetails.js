@@ -120,10 +120,10 @@ function RecipeDetails() {
     const getStorage = JSON.parse(localStorage.getItem('inProgressRecipes'));
     const idx = location.pathname.split('/')[2];
     if (type === 'meals') {
-      getStorage.meals[idx] = [];
+      getStorage.meals[idx] = recipe;
       localStorage.setItem('inProgressRecipes', JSON.stringify(getStorage));
     } else {
-      getStorage.drinks[idx] = [];
+      getStorage.drinks[idx] = recipe;
       localStorage.setItem('inProgressRecipes', JSON.stringify(getStorage));
     }
   };

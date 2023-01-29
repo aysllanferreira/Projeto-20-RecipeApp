@@ -1,29 +1,31 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { getMealsByID, getDrinksByID } from '../services/api';
 
 function RecipesInProgress() {
   const [recipe, setRecipe] = useState([]);
-  const [kindOfRecipe, setKindOfRecipe] = useState('');
+  const history = useHistory();
 
   useEffect(() => {
-    const { pathname } = window.location;
-    const id = pathname.split('/')[2];
-    const kindOfRecipex = pathname.split('/')[1];
-    setKindOfRecipe(kindOfRecipex);
-    if (kindOfRecipex === 'meals') {
-      const getMeals = async () => {
-        const response = await getMealsByID(id);
-        setRecipe(response.meals[0]);
-      };
-      getMeals();
+    const getType = history.location.pathname.split('/')[1];
+    const getId = history.location.pathname.split('/')[2];
+
+    if (getType === 'meals') {
+      getMealsByID(getId).then((response) => setRecipe(response.meals[0]));
     } else {
-      const getDrinks = async () => {
-        const response = await getDrinksByID(id);
-        setRecipe(response.drinks[0]);
-      };
-      getDrinks();
+      getDrinksByID(getId).then((response) => setRecipe(response.drinks[0]));
     }
-  }, [kindOfRecipe]);
+  }, [history]);
+
+  const handleChange = ({ target }) => {
+    const targetChecked = target.checked;
+
+    if (targetChecked) {
+      target.parentNode.style.textDecoration = 'line-through solid rgb(0, 0, 0)';
+    } else {
+      target.parentNode.style.textDecoration = 'none';
+    }
+  };
 
   return (
     <div>
@@ -63,12 +65,20 @@ function RecipesInProgress() {
               if (key.includes('Ingredient') && recipe[key]) {
                 return (
                   <li key={ index }>
-                    <label htmlFor={ key } data-testid={ `${index}-ingredient-step` }>
+                    <label
+                      htmlFor={ key }
+                      data-testid={ `${key.split('Ingredient')[1] - 1}-ingredient-step` }
+                    >
                       <input
                         type="checkbox"
                         id={ key }
+                        name={ key }
+                        value={ recipe[key] }
+                        onChange={ handleChange }
                       />
+
                       {recipe[key]}
+
                     </label>
 
                   </li>
