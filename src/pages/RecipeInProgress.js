@@ -43,19 +43,27 @@ function RecipesInProgress() {
   };
 
   useEffect(() => {
-    // get from local storage and style the checkbox
-    const storage = JSON.parse(localStorage.getItem(id));
-    if (storage) {
-      setStorageChecked(storage);
-      const keys = Object.keys(storage);
+    const getStorage = JSON.parse(localStorage.getItem(id));
+    if (getStorage && clicked) {
+      setStorageChecked(getStorage);
+      setClicked(false);
+    }
+  }, [id, clicked, storageChecked]);
+
+  // if checked of checkbox is true, apply style
+  useEffect(() => {
+    const getStorage = JSON.parse(localStorage.getItem(id));
+
+    if (Object.keys(recipe).length > 0) {
+      const keys = Object.keys(getStorage);
       keys.forEach((key) => {
-        if (storage[key]) {
-          const checkbox = document.querySelector(`[data-testid="${key}"]`);
-          checkbox.style.textDecoration = 'line-through solid rgb(0, 0, 0)';
+        if (getStorage[key]) {
+          const node = document.querySelector(`[data-testid="${key}"]`);
+          node.style.textDecoration = 'line-through solid rgb(0, 0, 0)';
         }
       });
     }
-  }, [clicked, id]);
+  }, [recipe, id]);
 
   return (
     <div>
@@ -105,8 +113,7 @@ function RecipesInProgress() {
                         name={ key }
                         value={ recipe[key] }
                         onChange={ handleChange }
-                        checked={ storageChecked[`${key
-                          .split('Ingredient')[1] - 1}-ingredient-step`] }
+                        checked={ storageChecked[`${key.split('Ingredient')[1] - 1}-ingredient-step`] }
                       />
 
                       {recipe[key]}
