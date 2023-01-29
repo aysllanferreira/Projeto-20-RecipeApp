@@ -4,6 +4,8 @@ import { getMealsByID, getDrinksByID } from '../services/api';
 import searchImg from '../images/searchIcon.svg';
 import BlackHeart from '../images/blackHeartIcon.svg';
 import WhiteHeart from '../images/whiteHeartIcon.svg';
+import CTOBtns from '../components/CTOBtns';
+import FinishRecipeBtn from '../components/FinishRecipeBtn';
 
 function RecipesInProgress() {
   const [recipe, setRecipe] = useState([]);
@@ -125,7 +127,6 @@ function RecipesInProgress() {
       name: getName,
       image: getImg,
     };
-
     const getStorage = JSON.parse(localStorage.getItem('favoriteRecipes'));
     if (getStorage === null) {
       localStorage.setItem('favoriteRecipes', JSON.stringify([myObj]));
@@ -145,36 +146,46 @@ function RecipesInProgress() {
     }
     setFavorite();
   };
-
+  const finishRecipe = () => {
+    const getStorage = JSON.parse(localStorage.getItem('doneRecipes'));
+    const copyRecipe = [...[recipe]][0];
+    const getId = copyRecipe.idMeal || copyRecipe.idDrink;
+    const getTypes = copyRecipe.strMeal ? 'comida' : 'bebida';
+    const getArea = copyRecipe.strArea ? copyRecipe.strArea : '';
+    const getCategory = copyRecipe.strCategory ? copyRecipe.strCategory : '';
+    const isAlcoholic = copyRecipe.strAlcoholic ? copyRecipe.strAlcoholic : '';
+    const getName = copyRecipe.strMeal || copyRecipe.strDrink;
+    const getImg = copyRecipe.strMealThumb || copyRecipe.strDrinkThumb;
+    const getDoneDate = new Date();
+    const getTags = copyRecipe.strTags ? copyRecipe.strTags.split(',') : [];
+    const myObj = {
+      id: getId,
+      type: getTypes,
+      area: getArea,
+      category: getCategory,
+      alcoholicOrNot: isAlcoholic,
+      name: getName,
+      image: getImg,
+      doneDate: getDoneDate,
+      tags: getTags,
+    };
+    if (getStorage === null) {
+      localStorage.setItem('doneRecipes', JSON.stringify([myObj]));
+    } else {
+      localStorage.setItem('doneRecipes', JSON.stringify([...getStorage, myObj]));
+    }
+    history.push('/done-recipes');
+  };
   return (
     <div>
-      <button
-        type="button"
-        data-testid="share-btn"
-        onClick={ copyLinkToClipboard }
-        src={ searchImg }
-      >
-        <img src={ searchImg } alt="share" />
-      </button>
-
-      <button
-        type="button"
-        data-testid="favorite-btn"
-        onClick={ saveRecipeLocalStorage }
-        src={ isFavorite ? BlackHeart : WhiteHeart }
-      >
-        {isFavorite ? (
-          <img
-            src={ BlackHeart }
-            alt="favorite"
-          />
-        ) : (
-          <img
-            src={ WhiteHeart }
-            alt="favorite"
-          />
-        )}
-      </button>
+      <CTOBtns
+        copyLinkToClipboard={ copyLinkToClipboard }
+        saveRecipeLocalStorage={ saveRecipeLocalStorage }
+        isFavorite={ isFavorite }
+        searchImg={ searchImg }
+        BlackHeart={ BlackHeart }
+        WhiteHeart={ WhiteHeart }
+      />
       {copied && <p data-testid="copied-link">Link copied!</p>}
       <h1>Recipe in progress</h1>
       {recipe && (
@@ -185,14 +196,11 @@ function RecipesInProgress() {
             src={ recipe.strDrinkThumb || recipe.strMealThumb }
             alt={ recipe.strDrink || recipe.strMeal }
           />
-
           <h3 data-testid="recipe-category">
             {recipe.strCategory || recipe.strAlcoholic}
           </h3>
-
           <h3>Instructions</h3>
           <p data-testid="instructions">{recipe.strInstructions}</p>
-
           <h3>Ingredients</h3>
           <ul>
             {Object.keys(recipe).map((key, index) => {
@@ -211,25 +219,18 @@ function RecipesInProgress() {
                         onChange={ handleChange }
                         checked={ storageChecked && storageChecked[key] }
                       />
-
                       {recipe[key]}
-
                     </label>
-
                   </li>
                 );
               }
               return null;
             })}
           </ul>
-
-          <button
-            type="button"
-            data-testid="finish-recipe-btn"
-            disabled={ !isDisabled }
-          >
-            Finish Recipe
-          </button>
+          <FinishRecipeBtn
+            isDisabled={ isDisabled }
+            finishRecipe={ finishRecipe }
+          />
         </div>
       )}
     </div>
