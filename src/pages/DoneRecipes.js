@@ -4,19 +4,27 @@ import shareIcon from '../images/shareIcon.svg';
 
 function DoneRecipes() {
   const [doneRecipes, setDoneRecipes] = useState([]);
+  const [copied, setCopied] = useState('');
 
   useEffect(() => {
     const doneRecipesStorage = JSON.parse(localStorage.getItem('doneRecipes'));
     setDoneRecipes(doneRecipesStorage);
   }, []);
   console.log(doneRecipes);
+
+  const shareRecipe = (index) => {
+    const { type, id } = doneRecipes[index];
+    const link = `http://localhost:3000/${type}s/${id}`;
+    setCopied('Link copied!');
+    navigator.clipboard.writeText(link);
+  };
   return (
     <div>
       <Header
         title="Done Recipes"
         haveSearch={ false }
       />
-
+      {copied !== '' && <p>{copied}</p>}
       <button
         type="button"
         data-testid="filter-by-all-btn"
@@ -53,6 +61,7 @@ function DoneRecipes() {
             type="button"
             data-testid={ `${index}-horizontal-share-btn` }
             src={ shareIcon }
+            onClick={ () => shareRecipe(index) }
           >
 
             <img

@@ -152,6 +152,9 @@ function RecipesInProgress() {
     };
     if (getStorage === null) {
       localStorage.setItem('doneRecipes', JSON.stringify([myObj]));
+    } else {
+      const filterStorage = getStorage.filter((item) => item.id !== fetchRecipes.id);
+      localStorage.setItem('doneRecipes', JSON.stringify([...filterStorage, myObj]));
     }
     history.push('/done-recipes');
   };
