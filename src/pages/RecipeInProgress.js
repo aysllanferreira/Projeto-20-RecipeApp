@@ -6,6 +6,7 @@ import BlackHeart from '../images/blackHeartIcon.svg';
 import WhiteHeart from '../images/whiteHeartIcon.svg';
 import CTOBtns from '../components/CTOBtns';
 import FinishRecipeBtn from '../components/FinishRecipeBtn';
+import renderRecipeItems from '../services/renderRecipeItems';
 
 function RecipesInProgress() {
   const [recipe, setRecipe] = useState([]);
@@ -21,12 +22,9 @@ function RecipesInProgress() {
   const checkifAllChecked = () => {
     const allChecked = document.querySelectorAll('input[type="checkbox"]:checked');
     const allChecks = document.querySelectorAll('input[type="checkbox"]');
-    console.log(allChecked);
     if (allChecks && allChecks.length === allChecked.length) {
-      console.log('entrou');
       setIsDisabled(true);
     } else {
-      console.log('nao entrou');
       setIsDisabled(false);
     }
   };
@@ -82,12 +80,12 @@ function RecipesInProgress() {
   }, [id, recipe]);
 
   const copyLinkToClipboard = () => {
+    setCopied(true);
     const { location: { href } } = window;
     const spliHref = href.split('/');
     spliHref.pop();
     const newHref = spliHref.join('/');
     navigator.clipboard.writeText(newHref);
-    setCopied(true);
   };
 
   const setFavorite = () => {
@@ -110,34 +108,23 @@ function RecipesInProgress() {
   const saveRecipeLocalStorage = () => {
     const copyRecipe = [...[recipe]][0];
 
-    const getId = copyRecipe.idMeal || copyRecipe.idDrink;
-    const getTypes = copyRecipe.strMeal ? 'meal' : 'drink';
-    const getArea = copyRecipe.strArea ? copyRecipe.strArea : '';
-    const getCategory = copyRecipe.strCategory ? copyRecipe.strCategory : '';
-    const isAlcoholic = copyRecipe.strAlcoholic ? copyRecipe.strAlcoholic : '';
-    const getName = copyRecipe.strMeal || copyRecipe.strDrink;
-    const getImg = copyRecipe.strMealThumb || copyRecipe.strDrinkThumb;
+    const fetchRecipes = renderRecipeItems(copyRecipe);
 
     const myObj = {
-      id: getId,
-      type: getTypes,
-      nationality: getArea,
-      category: getCategory,
-      alcoholicOrNot: isAlcoholic,
-      name: getName,
-      image: getImg,
+      id: fetchRecipes.id,
+      type: fetchRecipes.type,
+      nationality: fetchRecipes.nationality,
+      category: fetchRecipes.category,
+      alcoholicOrNot: fetchRecipes.alcoholicOrNot,
+      name: fetchRecipes.name,
+      image: fetchRecipes.image,
     };
     const getStorage = JSON.parse(localStorage.getItem('favoriteRecipes'));
     if (getStorage === null) {
       localStorage.setItem('favoriteRecipes', JSON.stringify([myObj]));
       setIsFavorite(!isFavorite);
     } else {
-      const filterStorage = getStorage.filter((item) => item.id !== getId);
-
-      if (filterStorage.length === getStorage.length) {
-        localStorage.setItem('favoriteRecipes', JSON.stringify([...getStorage, myObj]));
-        setIsFavorite(!isFavorite);
-      }
+      const filterStorage = getStorage.filter((item) => item.id !== fetchRecipes.id);
 
       if (filterStorage.length < getStorage.length) {
         localStorage.setItem('favoriteRecipes', JSON.stringify(filterStorage));
@@ -149,30 +136,22 @@ function RecipesInProgress() {
   const finishRecipe = () => {
     const getStorage = JSON.parse(localStorage.getItem('doneRecipes'));
     const copyRecipe = [...[recipe]][0];
-    const getId = copyRecipe.idMeal || copyRecipe.idDrink;
-    const getTypes = copyRecipe.strMeal ? 'comida' : 'bebida';
-    const getArea = copyRecipe.strArea ? copyRecipe.strArea : '';
-    const getCategory = copyRecipe.strCategory ? copyRecipe.strCategory : '';
-    const isAlcoholic = copyRecipe.strAlcoholic ? copyRecipe.strAlcoholic : '';
-    const getName = copyRecipe.strMeal || copyRecipe.strDrink;
-    const getImg = copyRecipe.strMealThumb || copyRecipe.strDrinkThumb;
+    const fetchRecipes = renderRecipeItems(copyRecipe);
     const getDoneDate = new Date();
     const getTags = copyRecipe.strTags ? copyRecipe.strTags.split(',') : [];
     const myObj = {
-      id: getId,
-      type: getTypes,
-      area: getArea,
-      category: getCategory,
-      alcoholicOrNot: isAlcoholic,
-      name: getName,
-      image: getImg,
+      id: fetchRecipes.id,
+      type: fetchRecipes.type,
+      nationality: fetchRecipes.nationality,
+      category: fetchRecipes.category,
+      alcoholicOrNot: fetchRecipes.alcoholicOrNot,
+      name: fetchRecipes.name,
+      image: fetchRecipes.image,
       doneDate: getDoneDate,
       tags: getTags,
     };
     if (getStorage === null) {
       localStorage.setItem('doneRecipes', JSON.stringify([myObj]));
-    } else {
-      localStorage.setItem('doneRecipes', JSON.stringify([...getStorage, myObj]));
     }
     history.push('/done-recipes');
   };
