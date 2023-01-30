@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
+import shareIcon from '../images/shareIcon.svg';
 
 function DoneRecipes() {
   const [doneRecipes, setDoneRecipes] = useState([]);
@@ -44,16 +45,18 @@ function DoneRecipes() {
           />
           <p data-testid={ `${index}-horizontal-top-text` }>
             {recipe.type === 'meal'
-              ? `${recipe.area} - ${recipe.category}` : recipe.alcoholicOrNot}
+              ? `${recipe.nationality} - ${recipe.category}` : recipe.alcoholicOrNot}
           </p>
           <p data-testid={ `${index}-horizontal-name` }>{recipe.name}</p>
           <p data-testid={ `${index}-horizontal-done-date` }>{recipe.doneDate}</p>
           <button
             type="button"
             data-testid={ `${index}-horizontal-share-btn` }
+            src={ shareIcon }
           >
+
             <img
-              src="https://img.icons8.com/ios/50/000000/share--v1.png"
+              src={ shareIcon }
               alt="share"
             />
           </button>
@@ -65,6 +68,7 @@ function DoneRecipes() {
               {tag}
             </p>
           ))}
+
         </div>
       ))}
     </div>
