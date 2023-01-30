@@ -4,19 +4,28 @@ import shareIcon from '../images/shareIcon.svg';
 
 function DoneRecipes() {
   const [doneRecipes, setDoneRecipes] = useState([]);
+  const [orinalRecipes, setOrinalRecipes] = useState([]);
   const [copied, setCopied] = useState('');
 
   useEffect(() => {
     const doneRecipesStorage = JSON.parse(localStorage.getItem('doneRecipes'));
     setDoneRecipes(doneRecipesStorage);
+    setOrinalRecipes(doneRecipesStorage);
   }, []);
-  console.log(doneRecipes);
 
   const shareRecipe = (index) => {
     const { type, id } = doneRecipes[index];
     const link = `http://localhost:3000/${type}s/${id}`;
     setCopied('Link copied!');
     navigator.clipboard.writeText(link);
+  };
+
+  const filterRecipes = (type) => {
+    if (type === 'all') {
+      setDoneRecipes(JSON.parse(localStorage.getItem('doneRecipes')));
+      return;
+    }
+    setDoneRecipes(orinalRecipes.filter((recipe) => recipe.type === type));
   };
   return (
     <div>
@@ -28,18 +37,21 @@ function DoneRecipes() {
       <button
         type="button"
         data-testid="filter-by-all-btn"
+        onClick={ () => filterRecipes('all') }
       >
         All
       </button>
       <button
         type="button"
         data-testid="filter-by-meal-btn"
+        onClick={ () => filterRecipes('meal') }
       >
         Food
       </button>
       <button
         type="button"
         data-testid="filter-by-drink-btn"
+        onClick={ () => filterRecipes('drink') }
       >
         Drinks
       </button>
@@ -50,6 +62,7 @@ function DoneRecipes() {
             src={ recipe.image }
             alt={ recipe.name }
             data-testid={ `${index}-horizontal-image` }
+            style={ { width: '100px' } }
           />
           <p data-testid={ `${index}-horizontal-top-text` }>
             {recipe.type === 'meal'
