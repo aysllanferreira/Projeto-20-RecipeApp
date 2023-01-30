@@ -60,4 +60,13 @@ describe('Testa o componente Profile', () => {
     fireEvent.click(screen.getByTestId(PROFILE_FAVORITE_BTN));
     expect(history.location.pathname).toBe('/favorite-recipes');
   });
+
+  it('Verifica se o email do usuário está sendo exibido na tela', () => {
+    localStorage.setItem('user', JSON.stringify({ email: 'joao@joao.com' }));
+    const { getByTestId } = renderWithRouter(<Profile />);
+
+    const email = getByTestId('profile-email');
+    expect(email).toBeInTheDocument();
+    expect(email.innerHTML).toBe('joao@joao.com');
+  });
 });
