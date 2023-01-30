@@ -77,7 +77,6 @@ function FavoriteRecipes() {
                     alt={ `recipe ${item.name}` }
                     src={ item.image }
                   />
-                  Card Image
                   <div>
                     {copys}
                   </div>

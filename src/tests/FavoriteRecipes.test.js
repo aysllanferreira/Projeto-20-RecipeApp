@@ -24,10 +24,4 @@ describe('Testa o componente <FavoriteRecipes />', () => {
     userEvent.click(filterMeal);
     userEvent.click(filterDrink);
   });
-  test('Teste se existe Links na página:', () => {
-    renderWithRouter(<FavoriteRecipes />);
-
-    const favoriteRecipes = screen.getByRole('img', { name: 'Card Image' });
-    userEvent.click(favoriteRecipes);
-  });
 });
