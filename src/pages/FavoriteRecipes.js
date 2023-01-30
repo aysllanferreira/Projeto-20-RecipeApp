@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import copy from 'clipboard-copy';
 import shareIcon from '../images/shareIcon.svg';
 import blackHeartIcon from '../images/blackHeartIcon.svg';
 import Header from '../components/Header';
@@ -19,15 +18,14 @@ function FavoriteRecipes() {
 
   function filterAll() {
     if (filter === 'all') return favorite;
-    if (filter !== 'all') {
-      return favorite.filter((recipe) => recipe.type === filter);
-    }
+
+    return favorite.filter((recipex) => recipex.type === filter);
   }
 
   const LinkCopied = ({ type, id }) => {
-    copy(`http://localhost:3000/${type}s/${id}`);
+    const link = `http://localhost:3000/${type}s/${id}`;
     setCopys('Link copied!');
-    setInterval(() => setCopys(''), '2000');
+    navigator.clipboard.writeText(link);
   };
 
   const clickStorage = (id) => {
@@ -71,11 +69,12 @@ function FavoriteRecipes() {
           if (item.type === 'meal') {
             return (
               <section key={ index }>
-                <Link to={ `${item.type}${item.id}` }>
+                <Link to={ `${item.type}s/${item.id}` }>
                   <img
                     data-testid={ `${index}-horizontal-image` }
                     alt={ `recipe ${item.name}` }
                     src={ item.image }
+                    style={ { width: '100px' } }
                   />
                   <div>
                     {copys}
@@ -111,6 +110,7 @@ function FavoriteRecipes() {
                   data-testid={ `${index}-horizontal-image` }
                   alt={ `recipe ${item.name}` }
                   src={ item.image }
+                  style={ { width: '100px' } }
                 />
                 <div>{copys}</div>
                 <div data-testid={ `${index}-horizontal-top-text` }>
@@ -132,6 +132,7 @@ function FavoriteRecipes() {
                   data-testid={ `${index}-horizontal-favorite-btn` }
                   src={ blackHeartIcon }
                   alt="favorite btn"
+
                 />
               </button>
             </section>
