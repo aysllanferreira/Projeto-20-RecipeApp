@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import shareIcon from '../images/shareIcon.svg';
 
@@ -57,19 +58,33 @@ function DoneRecipes() {
       </button>
 
       {doneRecipes && doneRecipes.map((recipe, index) => (
-        <div key={ recipe.id }>
-          <img
-            src={ recipe.image }
-            alt={ recipe.name }
-            data-testid={ `${index}-horizontal-image` }
-            style={ { width: '100px' } }
-          />
-          <p data-testid={ `${index}-horizontal-top-text` }>
-            {recipe.type === 'meal'
-              ? `${recipe.nationality} - ${recipe.category}` : recipe.alcoholicOrNot}
-          </p>
-          <p data-testid={ `${index}-horizontal-name` }>{recipe.name}</p>
-          <p data-testid={ `${index}-horizontal-done-date` }>{recipe.doneDate}</p>
+        <>
+          <Link to={ `/${recipe.type}s/${recipe.id}` } key={ recipe.id }>
+            <div>
+              <img
+                src={ recipe.image }
+                alt={ recipe.name }
+                data-testid={ `${index}-horizontal-image` }
+                style={ { width: '100px' } }
+              />
+              <p data-testid={ `${index}-horizontal-top-text` }>
+                {recipe.type === 'meal'
+                  ? `${recipe.nationality} - ${recipe.category}` : recipe.alcoholicOrNot}
+              </p>
+              <p data-testid={ `${index}-horizontal-name` }>{recipe.name}</p>
+              <p data-testid={ `${index}-horizontal-done-date` }>{recipe.doneDate}</p>
+
+              {recipe.tags && recipe.tags.map((tag) => (
+                <p
+                  key={ tag }
+                  data-testid={ `${index}-${tag}-horizontal-tag` }
+                >
+                  {tag}
+                </p>
+              ))}
+
+            </div>
+          </Link>
           <button
             type="button"
             data-testid={ `${index}-horizontal-share-btn` }
@@ -82,16 +97,7 @@ function DoneRecipes() {
               alt="share"
             />
           </button>
-          {recipe.tags && recipe.tags.map((tag) => (
-            <p
-              key={ tag }
-              data-testid={ `${index}-${tag}-horizontal-tag` }
-            >
-              {tag}
-            </p>
-          ))}
-
-        </div>
+        </>
       ))}
     </div>
   );
